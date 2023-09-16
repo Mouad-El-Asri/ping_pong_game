@@ -10,7 +10,7 @@ body {
 }
 
 #canvas {
-	background: linear-gradient(246deg, #C8DAF4 1.8%, #B2C6E4 45.54%, #D8DEE8 97.23%);
+	background: #B2C6E4;
 	position: absolute;
 	margin: auto;
 	top: 0;

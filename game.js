@@ -1,51 +1,53 @@
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext('2d');
-const canvasWidth = canvas.width;
-const canvasHeight = canvas.height;
+import {
+	canvasWidth,
+	canvasHeight,
+	drawRect,
+	drawBall,
+	drawLine,
+	drawScore
+  } from './drawFunctions.js';
 
-function drawRect(x, y, w, h, color)
-{
-	ctx.fillStyle = color;
-	ctx.fillRect(x, y, w, h);
+const user = {
+	x : 10,
+	y : canvasHeight / 2 - 100 / 2,
+	w : 12,
+	h : 100,
+	color: "#211F3C",
+	score : 0
 }
 
-function drawBall(x, y, r, color)
-{
-	ctx.fillStyle = color;
-	ctx.beginPath();
-	ctx.arc(x, y, r, 0, Math.PI * 2, false);
-	ctx.closePath();
-	ctx.fill();
+const comp = {
+	x : canvasWidth - 20,
+	y : canvasHeight / 2 - 100 / 2,
+	w : 12,
+	h : 100,
+	color: "#211F3C",
+	score : 0
 }
 
-function drawLine(x0, y0, x1, y1, color)
-{
-	ctx.strokeStyle = color;
-	ctx.beginPath();
-	ctx.moveTo(x0, y0);
-	ctx.lineTo(x1, y1);
-	ctx.closePath();
-	ctx.stroke();
+const midLine = {
+	startX : canvasWidth / 2,
+	startY : 0,
+	endX : canvasWidth / 2,
+	endY : canvasHeight,
+	color : "#6c757d"
 }
 
-function drawText(text, x, y, color)
-{
-	ctx.fillStyle = color;
-	ctx.font = "40px Helvetica";
-
-	const textWidth = ctx.measureText(text).width;
-
-    const textX = canvasWidth / 2 - textWidth / 2 + x;
-
-	ctx.fillText(text, textX, y);
+const ball = {
+	x : canvasWidth / 2,
+	y : canvasHeight / 2,
+	r : 10,
+	color : "#1E1B37"
 }
 
-drawRect(10, 282, 12, 80, "#211F3C");
-drawRect(1068, 282, 12, 80, "#211F3C");
-drawLine(canvasWidth / 2, 0, canvasWidth / 2, canvasHeight, "#6c757d");
-drawBall(canvasWidth / 2, canvasHeight / 2, 10, 0, "#1E1B37");
+function render() {
+	drawRect(0, 0, canvasWidth, canvasHeight, "#B2C6E4");
+	drawRect(user.x, user.y, user.w, user.h, user.color);
+	drawRect(comp.x, comp.y, comp.w, comp.h, comp.color);
+	drawLine(midLine.startX, midLine.startY, midLine.endX, midLine.endY, midLine.color);
+	drawBall(ball.x, ball.y, ball.r, ball.color);
+	drawScore(0, -50, 70, "#201E3A");
+	drawScore(0, 50, 70, "#201E3A");
+}
 
-const text = 0;
-
-drawText(text, -50, 70, "#201E3A");
-drawText(text, 50, 70, "#201E3A");
+render();
