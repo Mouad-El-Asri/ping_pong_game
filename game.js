@@ -1,10 +1,12 @@
 import {
+	canvas,
 	canvasWidth,
 	canvasHeight,
 	drawRect,
 	drawBall,
 	drawLine,
-	drawScore
+	drawScore,
+	drawText
   } from './drawFunctions.js';
 
 import {
@@ -14,14 +16,30 @@ import {
 	ball
    } from './gameObjects.js';
 
+let gameOver = false;
+let userWon = false;
+let compWon = false;
+
 function render() {
-	drawRect(0, 0, canvasWidth, canvasHeight, "#B2C6E4");
-	drawRect(user.x, user.y, user.w, user.h, user.color);
-	drawRect(comp.x, comp.y, comp.w, comp.h, comp.color);
-	drawLine(midLine.startX, midLine.startY, midLine.endX, midLine.endY, midLine.color);
-	drawBall(ball.x, ball.y, ball.r, ball.color);
-	drawScore(0, -50, 70, "#201E3A");
-	drawScore(0, 50, 70, "#201E3A");
+	if (gameOver) {
+		drawRect(0, 0, canvasWidth, canvasHeight, "#B2C6E4");
+		drawLine(canvasWidth / 2, 0, canvasWidth / 2, (canvasHeight / 2) - 40);
+
+		drawLine(canvasWidth / 2, (canvasHeight / 2) + 40, canvasWidth / 2, canvasHeight);
+		if (userWon) {
+			drawText("Game Over, You Win!", "#003366");
+		} else {
+			drawText("Game Over, You Lose!", "#003366");
+		}
+	} else {
+		drawRect(0, 0, canvasWidth, canvasHeight, "#B2C6E4");
+		drawRect(user.x, user.y, user.w, user.h, user.color);
+		drawRect(comp.x, comp.y, comp.w, comp.h, comp.color);
+		drawLine(midLine.startX, midLine.startY, midLine.endX, midLine.endY, midLine.color);
+		drawBall(ball.x, ball.y, ball.r, ball.color);
+		drawScore(user.score, -50, 70, "#201E3A");
+		drawScore(comp.score, 50, 70, "#201E3A");
+	}
 }
 
 function collision(ball, player) {
@@ -38,19 +56,43 @@ function collision(ball, player) {
 	return (ballRight > playerLeft && ballTop < playerBottom && ballLeft < playerRight && ballBottom > playerTop);
 }
 
+function resetBall() {
+	ball.x = canvasWidth / 2;
+	ball.y = canvasHeight / 2;
+	ball.velocityX *= -1;
+}
+
+canvas.addEventListener("mousemove", movePaddle);
+
+function movePaddle(event) {
+	let pos = canvas.getBoundingClientRect();
+	user.y = event.clientY - pos.top - (user.h / 2);
+}
+
+
+
 function update() {
 	ball.x += ball.velocityX;
 	ball.y += ball.velocityY;
-	if (ball.y + ball.r >= canvasHeight || 
-		ball.y + ball.r <= 0) {
+
+	let computerLevel = 0.1;
+
+	comp.y += (ball.y - (comp.y + comp.h / 2)) * computerLevel;
+
+	if (ball.y + ball.r >= canvasHeight || ball.y + ball.r <= 0) {
 			ball.velocityY *= -1;
 	}
 
 	let player = (ball.x < canvasWidth / 2) ? user : comp;
 
 	if (collision(ball, player)) {
+		// where the ball hits the player
 		let collidePoint = ball.y - (player.y + player.h / 2);
+
+		// normalization
 		collidePoint = collidePoint / (player.h / 2);
+
+		// calculate the angle in Radian
 		let angleRad = (Math.PI / 4) * collidePoint;
 
 		let direction = (ball.x < canvasWidth / 2) ? 1 : -1;
@@ -59,6 +101,22 @@ function update() {
 		ball.velocityY = direction * ball.speed * Math.sin(angleRad);
 
 		ball.speed += 0.2;
+	} 
+	
+	if (ball.x - ball.r < 0) {
+		comp.score++;
+		resetBall();
+	} else if (ball.x + ball.r > canvasWidth) {
+		user.score++;
+		resetBall();
+	}
+
+	if (user.score === 1) {
+        userWon = true;
+		gameOver = true;
+    } else if (comp.score === 1) {
+		compWon = true;
+		gameOver = true;
 	}
 }
 

@@ -6,7 +6,7 @@ import {
 export const user = {
 	x : 10,
 	y : canvasHeight / 2 - 100 / 2,
-	w : 12,
+	w : 6,
 	h : 100,
 	color: "#211F3C",
 	score : 0
@@ -15,7 +15,7 @@ export const user = {
 export const comp = {
 	x : canvasWidth - 20,
 	y : canvasHeight / 2 - 100 / 2,
-	w : 12,
+	w : 6,
 	h : 100,
 	color: "#211F3C",
 	score : 0
