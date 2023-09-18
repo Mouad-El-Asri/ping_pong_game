@@ -3,7 +3,7 @@ import {
 	canvasHeight,
   } from './drawFunctions.js';
 
-export const user = {
+const user = {
 	x : 10,
 	y : canvasHeight / 2 - 100 / 2,
 	w : 6,
@@ -12,7 +12,7 @@ export const user = {
 	score : 0
 }
 
-export const comp = {
+const comp = {
 	x : canvasWidth - 20,
 	y : canvasHeight / 2 - 100 / 2,
 	w : 6,
@@ -21,7 +21,7 @@ export const comp = {
 	score : 0
 }
 
-export const midLine = {
+const midLine = {
 	startX : canvasWidth / 2,
 	startY : 0,
 	endX : canvasWidth / 2,
@@ -29,7 +29,7 @@ export const midLine = {
 	color : "#6c757d"
 }
 
-export const ball = {
+const ball = {
 	x : canvasWidth / 2,
 	y : canvasHeight / 2,
 	r : 10,
@@ -39,3 +39,10 @@ export const ball = {
 	velocityY : 5,
 	color : "#1E1B37"
 }
+
+export {
+    user,
+    comp,
+    midLine,
+    ball,
+};

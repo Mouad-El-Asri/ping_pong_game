@@ -1,17 +1,17 @@
-export const canvas = document.getElementById("canvas");
+const canvas = document.getElementById("canvas");
 canvas.width = 1088;
 canvas.height = 644;
 const ctx = canvas.getContext('2d');
-export const canvasWidth = canvas.width;
-export const canvasHeight = canvas.height;
+const canvasWidth = canvas.width;
+const canvasHeight = canvas.height;
 
-export function drawRect(x, y, w, h, color)
+function drawRect(x, y, w, h, color)
 {
 	ctx.fillStyle = color;
 	ctx.fillRect(x, y, w, h);
 }
 
-export function drawBall(x, y, r, color)
+function drawBall(x, y, r, color)
 {
 	ctx.fillStyle = color;
 	ctx.beginPath();
@@ -20,7 +20,7 @@ export function drawBall(x, y, r, color)
 	ctx.fill();
 }
 
-export function drawLine(startX, startY, endX, endY, color)
+function drawLine(startX, startY, endX, endY, color)
 {
 	ctx.strokeStyle = color;
 	ctx.beginPath();
@@ -30,7 +30,7 @@ export function drawLine(startX, startY, endX, endY, color)
 	ctx.stroke();
 }
 
-export function drawScore(text, x, y, color)
+function drawScore(text, x, y, color)
 {
 	ctx.fillStyle = color;
 	ctx.font = "40px Helvetica";
@@ -42,7 +42,7 @@ export function drawScore(text, x, y, color)
 	ctx.fillText(text, textX, y);
 }
 
-export function drawText(text, color)
+function drawText(text, color)
 {
 	ctx.fillStyle = color;
 	ctx.font = "500 50px Arial";
@@ -53,3 +53,15 @@ export function drawText(text, color)
 
 	ctx.fillText(text, textX, canvasHeight / 2);
 }
+
+export {
+	canvas,
+	canvasWidth,
+	canvasHeight,
+    drawRect,
+	drawBall,
+	drawLine,
+	drawScore,
+	drawText
+};
+
