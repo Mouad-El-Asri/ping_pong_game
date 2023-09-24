@@ -1,0 +1,16 @@
+{
+  "name": "ping_pong_game",
+  "version": "1.0.0",
+  "description": " A classic Pong game built using HTML5 canvas, CSS3, and TypeScript. Test your reflexes in this simple yet engaging game, where you control a paddle to bounce a ball and score points. The game features smooth animations, and dynamic scoring. Challenge yourself and beat the computer in this timeless arcade favorite.",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Ping Pong",
+    "Pong Game",
+    "Ping Pong Game"
+  ],
+  "author": "Mouad El Asri",
+  "license": "MIT"
+}
