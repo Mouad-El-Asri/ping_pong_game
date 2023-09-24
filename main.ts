@@ -1,4 +1,4 @@
-import PongGame from './game';
+import PongGame from "./game";
 
-const game : PongGame = new PongGame;
+const game: PongGame = new PongGame();
 game.startGame();

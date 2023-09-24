@@ -25,8 +25,4 @@ interface Ball {
   color: string;
 }
 
-export {
-    Rect,
-	Line,
-	Ball
-};
+export { Rect, Line, Ball };

@@ -1,25 +1,25 @@
 body {
-	background: linear-gradient(249.81deg, #16132B 4.33%, #3D3C65 94.16%);
-	margin: 0;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	height: 100vh;
-	width: 100vw;
-	overflow: hidden;
+  background: linear-gradient(249.81deg, #16132b 4.33%, #3d3c65 94.16%);
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
 }
 
 #canvas {
-	background: #B2C6E4;
-	position: absolute;
-	margin: auto;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
-	border-radius: 63px;
-	max-width: 100%;
-	max-height: 100%;
-	width: auto;
-	height: auto;
+  background: #b2c6e4;
+  position: absolute;
+  margin: auto;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: 63px;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
 }
