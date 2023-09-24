@@ -7,16 +7,29 @@ import {
 	drawLine,
 	drawScore,
 	drawText
-  } from './drawFunctions.js';
+  } from './drawFunctions';
 
 import {
 	user,
 	comp,
 	midLine,
 	ball
-   } from './gameObjects.js';
+   } from './gameObjects';
+
+import {
+    Rect,
+	Line,
+	Ball
+} from './interfaces';
+
 
 class PongGame {
+	gameOver: boolean;
+	userWon: boolean;
+	compWon: boolean;
+	framePerSec: number;
+	isPaused: boolean;
+
 	constructor() {
 		this.gameOver = false;
 		this.userWon = false;
@@ -25,39 +38,39 @@ class PongGame {
 		this.isPaused = false;
 	}
 
-	pauseGame(duration) {
+	pauseGame(duration : number) : void {
         this.isPaused = true;
         setTimeout(() => {
             this.isPaused = false;
         }, duration);
     }
 
-	collision(ball, player) {
-		const playerTop = player.y;
-		const playerBottom = player.y + player.h;
-		const playerLeft = player.x;
-		const playerRight = player.x + player.w;
+	collision(ball : Ball, player : Rect) : boolean {
+		const playerTop : number = player.y;
+		const playerBottom : number = player.y + player.h;
+		const playerLeft : number = player.x;
+		const playerRight : number = player.x + player.w;
 	
-		const ballTop = ball.y - ball.r;
-		const ballBottom = ball.y + ball.r;
-		const ballLeft = ball.x - ball.r;
-		const ballRight = ball.x + ball.r;
+		const ballTop : number = ball.y - ball.r;
+		const ballBottom : number = ball.y + ball.r;
+		const ballLeft : number = ball.x - ball.r;
+		const ballRight : number = ball.x + ball.r;
 		
 		return (ballRight > playerLeft && ballTop < playerBottom && ballLeft < playerRight && ballBottom > playerTop);
 	}
 
-	resetBall() {
+	resetBall() : void {
 		ball.x = canvasWidth / 2;
 		ball.y = canvasHeight / 2;
 		ball.velocityX *= -1;
 	}
 
-	movePaddle(event) {
-		let pos = canvas.getBoundingClientRect();
+	movePaddle(event : MouseEvent) : void {
+		let pos : DOMRect = canvas.getBoundingClientRect();
 		user.y = event.clientY - pos.top - (user.h / 2);
 	}
 
-	updateScore() {
+	updateScore() : void {
 		if (ball.x - ball.r < 0) {
 			comp.score++;
 			this.resetBall();
@@ -69,7 +82,7 @@ class PongGame {
 		}
 	}
 
-	checkGameStatus() {
+	checkGameStatus() : void {
 		if (user.score === 2) {
 			this.userWon = true;
 			this.gameOver = true;
@@ -79,11 +92,11 @@ class PongGame {
 		}
 	}
 
-	update() {
+	update() : void {
 		ball.x += ball.velocityX;
 		ball.y += ball.velocityY;
 	
-		let computerLevel = 0.1;
+		let computerLevel : number = 0.1;
 	
 		comp.y += (ball.y - (comp.y + comp.h / 2)) * computerLevel;
 	
@@ -91,19 +104,19 @@ class PongGame {
 			ball.velocityY *= -1;
 		}
 	
-		let player = (ball.x < canvasWidth / 2) ? user : comp;
+		let player : Rect = (ball.x < canvasWidth / 2) ? user : comp;
 	
 		if (this.collision(ball, player)) {
 			// where the ball hits the player
-			let collidePoint = ball.y - (player.y + player.h / 2);
+			let collidePoint : number = ball.y - (player.y + player.h / 2);
 	
 			// normalization
 			collidePoint = collidePoint / (player.h / 2);
 	
 			// calculate the angle in Radian
-			let angleRad = (Math.PI / 4) * collidePoint;
+			let angleRad : number = (Math.PI / 4) * collidePoint;
 	
-			let direction = (ball.x < canvasWidth / 2) ? 1 : -1;
+			let direction : number = (ball.x < canvasWidth / 2) ? 1 : -1;
 	
 			ball.velocityX = direction * ball.speed * Math.cos(angleRad);
 			ball.velocityY = direction * ball.speed * Math.sin(angleRad);
@@ -115,12 +128,12 @@ class PongGame {
 		this.checkGameStatus();
 	}
 
-	render() {
+	render() : void {
 		if (this.gameOver) {
 			drawRect(0, 0, canvasWidth, canvasHeight, "#B2C6E4");
-			drawLine(canvasWidth / 2, 0, canvasWidth / 2, (canvasHeight / 2) - 40);
-	
-			drawLine(canvasWidth / 2, (canvasHeight / 2) + 40, canvasWidth / 2, canvasHeight);
+			drawLine(canvasWidth / 2, 0, canvasWidth / 2, (canvasHeight / 2) - 40, midLine.color);
+			drawLine(canvasWidth / 2, (canvasHeight / 2) + 40, canvasWidth / 2, canvasHeight, midLine.color);
+
 			if (this.userWon) {
 				drawText("Game Over, You Win!", "#003366");
 			} else if (this.compWon) {
@@ -132,21 +145,19 @@ class PongGame {
 			drawRect(comp.x, comp.y, comp.w, comp.h, comp.color);
 			drawLine(midLine.startX, midLine.startY, midLine.endX, midLine.endY, midLine.color);
 			drawBall(ball.x, ball.y, ball.r, ball.color);
-			drawScore(user.score, -50, 70, "#201E3A");
-			drawScore(comp.score, 50, 70, "#201E3A");
+			drawScore(user.score.toString(), -50, 70, "#201E3A");
+			drawScore(comp.score.toString(), 50, 70, "#201E3A");
 		}
 	}
 
-	game()
-	{
-		if (!this.isPaused)
-		{
+	game() : void {
+		if (!this.isPaused) {
 			this.update();
 		}
 		this.render();
 	}
 
-	startGame() {
+	startGame() : void {
         canvas.addEventListener("mousemove", this.movePaddle);
 
         setInterval(() => this.game(), 1000 / this.framePerSec);

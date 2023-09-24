@@ -1,9 +1,15 @@
 import {
 	canvasWidth,
 	canvasHeight,
-  } from './drawFunctions.js';
+  } from './drawFunctions';
 
-const user = {
+import {
+	Rect,
+	Line,
+	Ball
+   } from './interfaces';
+
+const user : Rect = {
 	x : 10,
 	y : canvasHeight / 2 - 100 / 2,
 	w : 6,
@@ -12,7 +18,7 @@ const user = {
 	score : 0
 }
 
-const comp = {
+const comp : Rect = {
 	x : canvasWidth - 20,
 	y : canvasHeight / 2 - 100 / 2,
 	w : 6,
@@ -21,7 +27,7 @@ const comp = {
 	score : 0
 }
 
-const midLine = {
+const midLine : Line = {
 	startX : canvasWidth / 2,
 	startY : 0,
 	endX : canvasWidth / 2,
@@ -29,12 +35,11 @@ const midLine = {
 	color : "#6c757d"
 }
 
-const ball = {
+const ball : Ball = {
 	x : canvasWidth / 2,
 	y : canvasHeight / 2,
 	r : 10,
 	speed : 5,
-	// velocity = speed + direction
 	velocityX : 5,
 	velocityY : 5,
 	color : "#1E1B37"
