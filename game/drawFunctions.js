@@ -25,6 +25,7 @@ function drawBall(x, y, r, color) {
 exports.drawBall = drawBall;
 function drawLine(startX, startY, endX, endY, color) {
     ctx.strokeStyle = color;
+    ctx.lineWidth = 3;
     ctx.beginPath();
     ctx.moveTo(startX, startY);
     ctx.lineTo(endX, endY);

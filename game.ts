@@ -7,11 +7,11 @@ import {
     drawLine,
     drawScore,
     drawText,
-} from "./drawFunctions.js";
+} from "./drawFunctions";
 
-import { user, comp, midLine, ball } from "./gameObjects.js";
+import { user, comp, midLine, ball } from "./gameObjects";
 
-import { Rect, Line, Ball } from "./interfaces.js";
+import { Rect, Line, Ball } from "./interfaces";
 
 class PongGame {
     gameOver: boolean;
@@ -19,6 +19,7 @@ class PongGame {
     compWon: boolean;
     framePerSec: number;
     isPaused: boolean;
+	renderingStopped: boolean;
 
     constructor() {
         this.gameOver = false;
@@ -26,6 +27,7 @@ class PongGame {
         this.compWon = false;
         this.framePerSec = 50;
         this.isPaused = false;
+		this.renderingStopped = false;
     }
 
     pauseGame(duration: number): void {
@@ -95,7 +97,7 @@ class PongGame {
 
         comp.y += (ball.y - (comp.y + comp.h / 2)) * computerLevel;
 
-        if (ball.y + ball.r >= canvasHeight || ball.y + ball.r <= 0) {
+        if (ball.y + ball.r > canvasHeight || ball.y + ball.r < 10) {
             ball.velocityY *= -1;
         }
 
@@ -146,6 +148,7 @@ class PongGame {
             } else if (this.compWon) {
                 drawText("Game Over, You Lose!", "#003366");
             }
+			this.renderingStopped = true;
         } else {
             drawRect(0, 0, canvasWidth, canvasHeight, "#B2C6E4");
             drawRect(user.x, user.y, user.w, user.h, user.color);
@@ -173,7 +176,8 @@ class PongGame {
     startGame(): void {
         canvas.addEventListener("mousemove", this.movePaddle);
 
-        setInterval(() => this.game(), 1000 / this.framePerSec);
+		if (!this.renderingStopped)
+			setInterval(() => this.game(), 1000 / this.framePerSec);
     }
 }
 

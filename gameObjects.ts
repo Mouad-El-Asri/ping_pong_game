@@ -1,6 +1,6 @@
-import { canvasWidth, canvasHeight } from "./drawFunctions.js";
+import { canvasWidth, canvasHeight } from "./drawFunctions";
 
-import { Rect, Line, Ball } from "./interfaces.js";
+import { Rect, Line, Ball } from "./interfaces";
 
 const user: Rect = {
     x: 10,
