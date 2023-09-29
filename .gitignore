@@ -1,0 +1,11 @@
+# Node_modules directory
+node_modules/
+
+# Environment-specific .env files
+.env
+
+# Local development files
+.vscode/
+
+# OS-generated files
+.DS_Store
