@@ -1,6 +1,9 @@
 # Node_modules directory
 node_modules/
 
+# TypeScript output directory
+game/
+
 # Environment-specific .env files
 .env
 
