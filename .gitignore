@@ -1,8 +1,11 @@
-# Node_modules directory
+# dependencies
 node_modules/
 
-# TypeScript output directory
+# Build output directory
 game/
+
+# webpack build files
+dist/
 
 # Environment-specific .env files
 .env
