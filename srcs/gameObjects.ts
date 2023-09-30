@@ -32,9 +32,9 @@ const ball: Ball = {
     x: canvasWidth / 2,
     y: canvasHeight / 2,
     r: 10,
-    speed: 5,
-    velocityX: 5,
-    velocityY: 5,
+    speed: 7,
+    velocityX: 7,
+    velocityY: 7,
     color: "#1E1B37",
 };
 
