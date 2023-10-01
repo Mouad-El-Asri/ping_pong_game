@@ -8,5 +8,5 @@
         "forceConsistentCasingInFileNames": true,
         "strict": true
     },
-    "include": ["srcs/*.ts"],
+    "include": ["srcs/*.ts", "srcs/*.tsx"],
 }
