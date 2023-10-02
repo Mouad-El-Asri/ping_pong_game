@@ -80,10 +80,10 @@ class PongGame {
     }
 
     checkGameStatus(): void {
-        if (user.score === 2) {
+        if (user.score === 5) {
             this.userWon = true;
             this.gameOver = true;
-        } else if (comp.score === 2) {
+        } else if (comp.score === 5) {
             this.compWon = true;
             this.gameOver = true;
         }
