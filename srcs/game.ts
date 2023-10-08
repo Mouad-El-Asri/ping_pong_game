@@ -13,12 +13,17 @@ import { user_1, user_2, midLine, ball } from "./gameObjects";
 
 import { Rect, Ball } from "./interfaces";
 
-import { io, Socket } from "socket.io-client";
-const socket = io("http://localhost:3000");
+import io from "socket.io-client";
+
+const socket = io("http://localhost:3000", {
+	transports: ['websocket']
+});
 
 socket.on('connect', () => {
 	console.log(`You connected to the server with id : ${socket.id}`);
 });
+
+socket.emit('join', 'hello mouad');
 
 let isPaused: boolean = false;
 let user1Won: boolean = false;
