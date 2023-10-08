@@ -2,7 +2,7 @@ import { canvasWidth, canvasHeight } from "./drawFunctions";
 
 import { Rect, Line, Ball } from "./interfaces";
 
-const user: Rect = {
+const user_1: Rect = {
     x: 10,
     y: canvasHeight / 2 - 100 / 2,
     w: 6,
@@ -11,7 +11,7 @@ const user: Rect = {
     score: 0,
 };
 
-const comp: Rect = {
+const user_2: Rect = {
     x: canvasWidth - 20,
     y: canvasHeight / 2 - 100 / 2,
     w: 6,
@@ -38,4 +38,4 @@ const ball: Ball = {
     color: "#1E1B37",
 };
 
-export { user, comp, midLine, ball };
+export { user_1, user_2, midLine, ball };

@@ -4,9 +4,10 @@
     "description": " A classic Pong game built using HTML5 canvas, CSS3, and TypeScript. Test your reflexes in this simple yet engaging game, where you control a paddle to bounce a ball and score points. The game features smooth animations, and dynamic scoring. Challenge yourself and beat the computer in this timeless arcade favorite.",
     "main": "main.js",
     "scripts": {
-		"compile": "tsc",
-		"build": "webpack --config webpack.config.js"
-	},
+        "compile": "tsc",
+        "build": "webpack --config webpack.config.js",
+        "watch": "nodemon"
+    },
     "keywords": [
         "Ping Pong",
         "Pong Game",
@@ -16,11 +17,14 @@
     "license": "MIT",
     "devDependencies": {
         "@types/react-dom": "^18.2.8",
+        "nodemon": "^3.0.1",
         "webpack": "^5.88.2",
         "webpack-cli": "^5.1.4"
     },
     "dependencies": {
         "react": "^18.2.0",
-        "react-dom": "^18.2.0"
+        "react-dom": "^18.2.0",
+        "socket.io": "^4.7.2",
+        "socket.io-client": "^4.7.2"
     }
 }

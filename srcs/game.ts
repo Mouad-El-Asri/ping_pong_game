@@ -9,22 +9,29 @@ import {
     drawText,
 } from "./drawFunctions";
 
-import { user, comp, midLine, ball } from "./gameObjects";
+import { user_1, user_2, midLine, ball } from "./gameObjects";
 
 import { Rect, Line, Ball } from "./interfaces";
 
+import io from "socket.io-client";
+
+const socket = io("http://localhost:3000");
+socket.on('connect', () => {
+	console.log('Connected to the server');
+});
+
 class PongGame {
     gameOver: boolean;
-    userWon: boolean;
-    compWon: boolean;
+    user1Won: boolean;
+    user2Won: boolean;
     framePerSec: number;
     isPaused: boolean;
 	renderingStopped: boolean;
 
     constructor() {
         this.gameOver = false;
-        this.userWon = false;
-        this.compWon = false;
+        this.user1Won = false;
+        this.user2Won = false;
         this.framePerSec = 50;
         this.isPaused = false;
 		this.renderingStopped = false;
@@ -64,27 +71,28 @@ class PongGame {
 
     movePaddle(event: MouseEvent): void {
         let pos: DOMRect = canvas.getBoundingClientRect();
-        user.y = event.clientY - pos.top - user.h / 2;
+        user_1.y = event.clientY - pos.top - user_1.h / 2;
+        user_2.y = event.clientY - pos.top - user_2.h / 2;
     }
 
     updateScore(): void {
         if (ball.x - ball.r < 0) {
-            comp.score++;
+            user_2.score++;
             this.resetBall();
             this.pauseGame(150);
         } else if (ball.x + ball.r > canvasWidth) {
-            user.score++;
+            user_1.score++;
             this.resetBall();
             this.pauseGame(150);
         }
     }
 
     checkGameStatus(): void {
-        if (user.score === 5) {
-            this.userWon = true;
+        if (user_1.score === 5) {
+            this.user1Won = true;
             this.gameOver = true;
-        } else if (comp.score === 5) {
-            this.compWon = true;
+        } else if (user_2.score === 5) {
+            this.user2Won = true;
             this.gameOver = true;
         }
     }
@@ -93,15 +101,11 @@ class PongGame {
         ball.x += ball.velocityX;
         ball.y += ball.velocityY;
 
-        let computerLevel: number = 0.1;
-
-        comp.y += (ball.y - (comp.y + comp.h / 2)) * computerLevel;
-
         if (ball.y + ball.r > canvasHeight || ball.y + ball.r < 10) {
             ball.velocityY *= -1;
         }
 
-        let player: Rect = ball.x < canvasWidth / 2 ? user : comp;
+        let player: Rect = ball.x < canvasWidth / 2 ? user_1 : user_2;
 
         if (this.collision(ball, player)) {
             // where the ball hits the player
@@ -111,7 +115,12 @@ class PongGame {
             collidePoint = collidePoint / (player.h / 2);
 
             // calculate the angle in Radian
-            let angleRad: number = (Math.PI / 4) * collidePoint;
+			let angleRad: number = (Math.PI / 4) * collidePoint;
+			if (player == user_1) {
+				angleRad *= 1;
+			} else if (player == user_2) {
+				angleRad *= -1;
+			}
 
             let direction: number = ball.x < canvasWidth / 2 ? 1 : -1;
 
@@ -143,16 +152,16 @@ class PongGame {
                 midLine.color
             );
 
-            if (this.userWon) {
+            if (this.user1Won) {
                 drawText("Game Over, You Win!", "#003366");
-            } else if (this.compWon) {
+            } else if (this.user2Won) {
                 drawText("Game Over, You Lose!", "#003366");
             }
 			this.renderingStopped = true;
         } else {
             drawRect(0, 0, canvasWidth, canvasHeight, "#B2C6E4");
-            drawRect(user.x, user.y, user.w, user.h, user.color);
-            drawRect(comp.x, comp.y, comp.w, comp.h, comp.color);
+            drawRect(user_1.x, user_1.y, user_1.w, user_1.h, user_1.color);
+            drawRect(user_2.x, user_2.y, user_2.w, user_2.h, user_2.color);
             drawLine(
                 midLine.startX,
                 midLine.startY,
@@ -161,8 +170,8 @@ class PongGame {
                 midLine.color
             );
             drawBall(ball.x, ball.y, ball.r, ball.color);
-            drawScore(user.score.toString(), -50, 70, "#201E3A");
-            drawScore(comp.score.toString(), 50, 70, "#201E3A");
+            drawScore(user_1.score.toString(), -50, 70, "#201E3A");
+            drawScore(user_2.score.toString(), 50, 70, "#201E3A");
         }
     }
 
