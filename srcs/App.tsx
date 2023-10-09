@@ -1,7 +1,12 @@
 import { FC } from "react";
 
 const App: FC = () => {
-    return <canvas id="canvas"></canvas>;
+    return (
+		<div>
+			<canvas id="canvas"></canvas>
+			<p id="message"></p>
+		</div>
+	);
 };
 
 export default App;

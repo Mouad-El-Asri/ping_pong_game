@@ -1,4 +1,4 @@
-interface Rect {
+interface Player {
     x: number;
     y: number;
     w: number;
@@ -25,4 +25,4 @@ interface Ball {
     color: string;
 }
 
-export { Rect, Line, Ball };
+export { Player, Line, Ball };

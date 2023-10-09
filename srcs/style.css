@@ -23,3 +23,15 @@ body {
     width: auto;
     height: auto;
 }
+
+#message {
+	position: relative;
+	color: #3d3c65;
+	top: 50;
+	left: 50;
+	bottom: 50;
+	right: 50;
+	font-size: 25px;
+	font-family: 'Roboto', sans-serif;
+	font-weight: 300;
+}
