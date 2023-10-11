@@ -3,6 +3,6 @@ import App from './App';
 
 ReactDOM.render(<App />, document.getElementById('root'));
 
-import { startGame } from './game';
+import startGame from './game';
 
 startGame();

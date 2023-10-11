@@ -1,0 +1,9 @@
+--- BACK --- :
+// replace them with canvas later
+// reference errors
+// each room with its specefic variables
+// leave sockets from rom after reaching 5 points
+
+
+--- BONUS --- :
+// add keys

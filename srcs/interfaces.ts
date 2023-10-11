@@ -25,4 +25,23 @@ interface Ball {
     color: string;
 }
 
-export { Player, Line, Ball };
+interface RoomPlayer {
+    socketId: number;
+    playerNumber: number;
+    x: number;
+    y: number;
+    score: number;
+}
+
+interface RoomBall {
+    x: number;
+    y: number;
+}
+
+interface Room {
+    id: number;
+    roomPlayers: RoomPlayer[];
+    roomBall: RoomBall;
+}
+
+export { Player, Line, Ball, Room };
