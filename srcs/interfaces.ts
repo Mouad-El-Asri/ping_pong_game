@@ -36,6 +36,10 @@ interface RoomPlayer {
 interface RoomBall {
     x: number;
     y: number;
+	r: number;
+	speed: number;
+	velocityX: number;
+	velocityY: number;
 }
 
 interface Room {

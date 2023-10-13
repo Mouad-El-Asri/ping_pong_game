@@ -23,7 +23,6 @@ socket.on("connect", () => {
     console.log(`You connected to the server with id : ${socket.id}`);
 });
 
-let isPaused: boolean = false;
 let user1Won: boolean = false;
 let user2Won: boolean = false;
 let gameOver: boolean = false;
@@ -31,60 +30,7 @@ let renderingStopped: boolean = false;
 let gameStarted: boolean = false;
 let playerNumber: number = 0;
 let roomID: number = 0;
-
-function pauseGame(duration: number): void {
-    isPaused = true;
-    setTimeout(() => {
-        isPaused = false;
-    }, duration);
-}
-
-function collision(ball: Ball, player: Player): boolean {
-    const playerTop: number = player.y;
-    const playerBottom: number = player.y + player.h;
-    const playerLeft: number = player.x;
-    const playerRight: number = player.x + player.w;
-
-    const ballTop: number = ball.y - ball.r;
-    const ballBottom: number = ball.y + ball.r;
-    const ballLeft: number = ball.x - ball.r;
-    const ballRight: number = ball.x + ball.r;
-
-    return (
-        ballRight > playerLeft &&
-        ballTop < playerBottom &&
-        ballLeft < playerRight &&
-        ballBottom > playerTop
-    );
-}
-
-function resetBall(): void {
-    ball.x = canvasWidth / 2;
-    ball.y = canvasHeight / 2;
-    ball.velocityX *= -1;
-}
-
-function updateScore(): void {
-    if (ball.x - ball.r < 0) {
-        player_2.score++;
-        resetBall();
-        pauseGame(150);
-    } else if (ball.x + ball.r > canvasWidth) {
-        player_1.score++;
-        resetBall();
-        pauseGame(150);
-    }
-}
-
-function checkGameStatus(): void {
-    if (player_1.score === 5) {
-        user1Won = true;
-        gameOver = true;
-    } else if (player_2.score === 5) {
-        user2Won = true;
-        gameOver = true;
-    }
-}
+let countdown: number = 3;
 
 function render(): void {
     if (gameOver) {
@@ -151,25 +97,20 @@ socket.on("start-game", () => {
 		message.innerHTML = "The game will start in 3 seconds...";
 	}, 500);
 
-    let countdown = 3;
-
-	while (countdown > 0) {
-		const countdownInterval = setInterval(() => {
-			countdown--;
-			if (countdown > 0) {
-				message.innerHTML = `The game will start in ${countdown} seconds...`;
-			} else {
-				clearInterval(countdownInterval);
-				message.innerHTML = "0";
-			}
-		}, 1000);
-	}
+	const countdownInterval = setInterval(() => {
+		countdown--;
+		if (countdown > 0) {
+			message.innerHTML = `The game will start in ${countdown} seconds...`;
+		} else {
+			clearInterval(countdownInterval);
+			message.innerHTML = "";
+		}
+	}, 1000);
 });
 
 socket.on("game-started", (room: Room) => {
 	console.log(`Game started with room id : ${room.id}`);
 	roomID = room.id;
-	message.innerHTML = "";
 
 	player_1.x = room.roomPlayers[0].x;
 	player_1.y = room.roomPlayers[0].y;
@@ -182,59 +123,34 @@ socket.on("game-started", (room: Room) => {
 	ball.x = room.roomBall.x;
 	ball.y = room.roomBall.y;
 
+	let pos: DOMRect = canvas.getBoundingClientRect();
 	canvas.addEventListener("mousemove", (event: MouseEvent) => {
 		if (gameStarted && !gameOver) {
-			let pos: DOMRect = canvas.getBoundingClientRect();
 			socket.emit("update-player", {
 				playerNumber: playerNumber,
 				roomID: roomID,
-				event: event,
+				event: event.clientY,
 				position: pos,
 			});
 		}
-    });
+	});
 
 	render();
 });
 
 socket.on("update-game", (room: Room) => {
-	ball.x += ball.velocityX;
-	ball.y += ball.velocityY;
+	ball.x = room.roomBall.x;
+	ball.y = room.roomBall.y;
+	ball.r = room.roomBall.r;
+	ball.velocityX = room.roomBall.velocityX;
+	ball.velocityY = room.roomBall.velocityY;
+	ball.speed = room.roomBall.speed;
 
 	player_1.y = room.roomPlayers[0].y;
 	player_2.y = room.roomPlayers[1].y;
 
 	player_1.score = room.roomPlayers[0].score;
 	player_2.score = room.roomPlayers[1].score;
-
-	if (ball.y + ball.r > canvasHeight || ball.y + ball.r < 10) {
-        ball.velocityY *= -1;
-    }
-
-	let player: Player = ball.x < canvasWidth / 2 ? player_1 : player_2;
-
-    if (collision(ball, player)) {
-        let collidePoint: number = ball.y - (player.y + player.h / 2);
-
-        collidePoint = collidePoint / (player.h / 2);
-
-        let angleRad: number = (Math.PI / 4) * collidePoint;
-        if (player == player_1) {
-            angleRad *= 1;
-        } else if (player == player_2) {
-            angleRad *= -1;
-        }
-
-        let direction: number = ball.x < canvasWidth / 2 ? 1 : -1;
-
-        ball.velocityX = direction * ball.speed * Math.cos(angleRad);
-        ball.velocityY = direction * ball.speed * Math.sin(angleRad);
-
-        ball.speed += 0.2;
-    }
-
-    updateScore();
-    checkGameStatus();
 
 	render();
 });

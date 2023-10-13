@@ -7,6 +7,10 @@ const cors = require("cors");
 
 let rooms = [];
 let framePerSec = 50;
+let user1Won = false;
+let user2Won = false;
+let gameOver = false;
+let isPaused = false;
 
 app.use(
     cors({
@@ -40,6 +44,8 @@ io.on("connection", (socket) => {
 				playerNumber: 2,
 				x: 10,
 				y: 644 / 2 - 100 / 2,
+				h: 100,
+				w: 6,
 				score: 0,
 			});
 
@@ -48,7 +54,7 @@ io.on("connection", (socket) => {
 			setTimeout(() => {
 				io.to(room.id).emit("game-started", room);
 				startRoomGame(room);
-			}, 1000);
+			}, 3100);
         } else {
             room = {
                 id: rooms.length + 1,
@@ -59,6 +65,8 @@ io.on("connection", (socket) => {
 						// replace them with canvas later
 						x: 1088 - 20,
 						y: 644 / 2 - 100 / 2,
+						h: 100,
+						w: 6,
 						score: 0,
                     },
                 ],
@@ -66,6 +74,10 @@ io.on("connection", (socket) => {
 					// replace them with canvas later
 					x: 1088 / 2,
 					y: 644 / 2,
+					r: 10,
+					speed: 7,
+					velocityX: 7,
+					velocityY: 7,
 				},
             };
             rooms.push(room);
@@ -78,14 +90,16 @@ io.on("connection", (socket) => {
 		const room = rooms.find((room) => room.id === data.roomID);
 
 		if (room) {
-			room.roomPlayers[data.playerNumber - 1].y = data.event.clientY - data.position.top - 100 / 2;
+			room.roomPlayers[data.playerNumber - 1].y = data.event - data.position.top - 100 / 2;
 		};
 
 		rooms = rooms.map((oldRoom) => {
-			if (room && oldRoom.id === room.id) {
+			if (oldRoom.id === room.id) {
 				return room;
 			}
-			return oldRoom;
+			else {
+				return oldRoom;
+			}
 		});
 
 		io.to(room.id).emit("update-game", room);
@@ -96,10 +110,111 @@ io.on("connection", (socket) => {
     });
 });
 
+function resetBall(room) {
+    room.roomBall.x = 1088 / 2;
+    room.roomBall.y = 644 / 2;
+    room.roomBall.velocityX *= -1;
+}
+
+function pauseGame(duration) {
+    isPaused = true;
+    setTimeout(() => {
+        isPaused = false;
+    }, duration);
+}
+
+function updateScore(room) {
+    if (room.roomBall.x - room.roomBall.r < 0) {
+        room.roomPlayers[1].score++;
+        resetBall(room);
+        pauseGame(150);
+    } else if (room.roomBall.x + room.roomBall.r > 1088) {
+        room.roomPlayers[0].score++;
+        resetBall(room);
+        pauseGame(150);
+    }
+}
+
+// function checkGameStatus(room) {
+//     if (room.roomPlayers[0].score === 5) {
+//         user1Won = true;
+//         gameOver = true;
+//     } else if (room.roomPlayers[1].score === 5) {
+//         user2Won = true;
+//         gameOver = true;
+//     }
+// }
+
+function collision(ball, player) {
+    const playerTop = player.y;
+    const playerBottom = player.y + player.h;
+    const playerLeft = player.x;
+    const playerRight = player.x + player.w;
+
+    const ballTop = ball.y - ball.r;
+    const ballBottom = ball.y + ball.r;
+    const ballLeft = ball.x - ball.r;
+    const ballRight = ball.x + ball.r;
+
+    return (
+        ballRight > playerLeft &&
+        ballTop < playerBottom &&
+        ballLeft < playerRight &&
+        ballBottom > playerTop
+    );
+}
+
 function startRoomGame(room) {
 	// if (!renderingStopped) {
-		setInterval(() => {
-			io.to(room.id).emit("update-game", room);
-		}, 1000 / framePerSec);
+	let interval = setInterval(() => {
+		room.roomBall.x += room.roomBall.velocityX;
+		room.roomBall.y += room.roomBall.velocityY;
+
+		if (room.roomBall.y + room.roomBall.r > 644 || room.roomBall.y + room.roomBall.r < 10) {
+			room.roomBall.velocityY *= -1;
+		}
+
+		let player = room.roomBall.x < 1088 / 2 ? room.roomPlayers[0] : room.roomPlayers[1];
+
+		if (collision(room.roomBall, player)) {
+			let collidePoint = room.roomBall.y - (player.y + player.h / 2);
+	
+			collidePoint = collidePoint / (player.h / 2);
+	
+			let angleRad = (Math.PI / 4) * collidePoint;
+			if (player === room.roomPlayers[0]) {
+				angleRad *= 1;
+			} else if (player === room.roomPlayers[1]) {
+				angleRad *= -1;
+			}
+	
+			let direction = room.roomBall.x < 1088 / 2 ? 1 : -1;
+	
+			room.roomBall.velocityX = direction * room.roomBall.speed * Math.cos(angleRad);
+			room.roomBall.velocityY = direction * room.roomBall.speed * Math.sin(angleRad);
+
+			room.roomBall.speed += 0.2;
+		}
+
+		updateScore(room);
+		// checkGameStatus(room);
+
+
+		// if (room.players[0].score === 10) {
+        //     room.winner = 1;
+        //     rooms = rooms.filter(r => r.id !== room.id);
+        //     io.to(room.id).emit('endGame', room);
+        //     clearInterval(interval);
+        // }
+
+        // if (room.players[1].score === 10) {
+        //     room.winner = 2;
+        //     rooms = rooms.filter(r => r.id !== room.id);
+        //     io.to(room.id).emit('endGame', room);
+        //     clearInterval(interval);
+        // }
+
+		io.to(room.id).emit("update-game", room);
+	}, 1000 / framePerSec);
 	// }
 };
