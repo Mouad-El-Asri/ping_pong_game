@@ -28,7 +28,6 @@ let user1Won: boolean = false;
 let user2Won: boolean = false;
 let gameOver: boolean = false;
 let renderingStopped: boolean = false;
-let framePerSec: number = 50;
 let gameStarted: boolean = false;
 let playerNumber: number = 0;
 let roomID: number = 0;
@@ -85,10 +84,6 @@ function checkGameStatus(): void {
         user2Won = true;
         gameOver = true;
     }
-}
-
-function update(): void {
-
 }
 
 function render(): void {
@@ -158,15 +153,17 @@ socket.on("start-game", () => {
 
     let countdown = 3;
 
-    const countdownInterval = setInterval(() => {
-        countdown--;
-        if (countdown > 0) {
-            message.innerHTML = `The game will start in ${countdown} seconds...`;
-        } else {
-            clearInterval(countdownInterval);
-            message.innerHTML = "0";
-        }
-    }, 1000);
+	while (countdown > 0) {
+		const countdownInterval = setInterval(() => {
+			countdown--;
+			if (countdown > 0) {
+				message.innerHTML = `The game will start in ${countdown} seconds...`;
+			} else {
+				clearInterval(countdownInterval);
+				message.innerHTML = "0";
+			}
+		}, 1000);
+	}
 });
 
 socket.on("game-started", (room: Room) => {
@@ -194,7 +191,6 @@ socket.on("game-started", (room: Room) => {
 				event: event,
 				position: pos,
 			});
-			// player_2.y = event.clientY - pos.top - player_2.h / 2;
 		}
     });
 
@@ -208,41 +204,46 @@ socket.on("update-game", (room: Room) => {
 	player_1.y = room.roomPlayers[0].y;
 	player_2.y = room.roomPlayers[1].y;
 
-	// if (ball.y + ball.r > canvasHeight || ball.y + ball.r < 10) {
-    //     ball.velocityY *= -1;
-    // }
+	player_1.score = room.roomPlayers[0].score;
+	player_2.score = room.roomPlayers[1].score;
 
-	// let player: Player = ball.x < canvasWidth / 2 ? player_1 : player_2;
+	if (ball.y + ball.r > canvasHeight || ball.y + ball.r < 10) {
+        ball.velocityY *= -1;
+    }
 
-    // if (collision(ball, player)) {
-    //     let collidePoint: number = ball.y - (player.y + player.h / 2);
+	let player: Player = ball.x < canvasWidth / 2 ? player_1 : player_2;
 
-    //     collidePoint = collidePoint / (player.h / 2);
+    if (collision(ball, player)) {
+        let collidePoint: number = ball.y - (player.y + player.h / 2);
 
-    //     let angleRad: number = (Math.PI / 4) * collidePoint;
-    //     if (player == player_1) {
-    //         angleRad *= 1;
-    //     } else if (player == player_2) {
-    //         angleRad *= -1;
-    //     }
+        collidePoint = collidePoint / (player.h / 2);
 
-    //     let direction: number = ball.x < canvasWidth / 2 ? 1 : -1;
+        let angleRad: number = (Math.PI / 4) * collidePoint;
+        if (player == player_1) {
+            angleRad *= 1;
+        } else if (player == player_2) {
+            angleRad *= -1;
+        }
 
-    //     ball.velocityX = direction * ball.speed * Math.cos(angleRad);
-    //     ball.velocityY = direction * ball.speed * Math.sin(angleRad);
+        let direction: number = ball.x < canvasWidth / 2 ? 1 : -1;
 
-    //     ball.speed += 0.2;
-    // }
+        ball.velocityX = direction * ball.speed * Math.cos(angleRad);
+        ball.velocityY = direction * ball.speed * Math.sin(angleRad);
 
-    // updateScore();
-    // checkGameStatus();
+        ball.speed += 0.2;
+    }
+
+    updateScore();
+    checkGameStatus();
+
+	render();
 });
 
 function startGame(): void {
     setTimeout(() => {
         if (socket.connected) {
-            socket.emit("join-room");
             message.innerHTML = "Waiting for opponent to join...";
+            socket.emit("join-room");
         } else {
             message.innerHTML =
                 "Failed to connect to server, please try again later.";

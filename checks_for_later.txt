@@ -2,7 +2,11 @@
 // replace them with canvas later
 // reference errors
 // each room with its specefic variables
-// leave sockets from rom after reaching 5 points
+// leave sockets from room after reaching 5 points
+
+
+--- FRONT --- :
+// add button
 
 
 --- BONUS --- :

@@ -6,6 +6,7 @@ const io = require("socket.io")(server);
 const cors = require("cors");
 
 let rooms = [];
+let framePerSec = 50;
 
 app.use(
     cors({
@@ -74,14 +75,14 @@ io.on("connection", (socket) => {
     });
 
 	socket.on("update-player", (data) => {
-		const room = rooms.find((room) => room.id === data.roomId);
+		const room = rooms.find((room) => room.id === data.roomID);
 
 		if (room) {
-			room.players[data.playerNumber - 1] = data.event.clientY - data.position.top - 100 / 2;
+			room.roomPlayers[data.playerNumber - 1].y = data.event.clientY - data.position.top - 100 / 2;
 		};
 
 		rooms = rooms.map((oldRoom) => {
-			if (oldRoom.id === room.id) {
+			if (room && oldRoom.id === room.id) {
 				return room;
 			}
 			return oldRoom;
@@ -96,9 +97,9 @@ io.on("connection", (socket) => {
 });
 
 function startRoomGame(room) {
-	if (!renderingStopped) {
+	// if (!renderingStopped) {
 		setInterval(() => {
 			io.to(room.id).emit("update-game", room);
 		}, 1000 / framePerSec);
-	}
+	// }
 };
