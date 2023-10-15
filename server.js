@@ -41,8 +41,9 @@ io.on("connection", (socket) => {
 
 			room.roomPlayers.push({
 				socketId: socket.id,
-				playerNumber: 2,
-				x: 10,
+				playerNumber: 1,
+				// replace them with canvas later
+				x: 1088 - 20,
 				y: 644 / 2 - 100 / 2,
 				h: 100,
 				w: 6,
@@ -60,10 +61,9 @@ io.on("connection", (socket) => {
                 id: rooms.length + 1,
                 roomPlayers: [
                     {
-                        socketId: socket.id,
-                        playerNumber: 1,
-						// replace them with canvas later
-						x: 1088 - 20,
+						socketId: socket.id,
+						playerNumber: 2,
+						x: 10,
 						y: 644 / 2 - 100 / 2,
 						h: 100,
 						w: 6,
@@ -125,25 +125,27 @@ function pauseGame(duration) {
 
 function updateScore(room) {
     if (room.roomBall.x - room.roomBall.r < 0) {
+		console.log("player 2 scored");
         room.roomPlayers[1].score++;
         resetBall(room);
-        pauseGame(150);
+        pauseGame(500);
     } else if (room.roomBall.x + room.roomBall.r > 1088) {
+		console.log("player 1 scored");
         room.roomPlayers[0].score++;
         resetBall(room);
-        pauseGame(150);
+        pauseGame(500);
     }
 }
 
-// function checkGameStatus(room) {
-//     if (room.roomPlayers[0].score === 5) {
-//         user1Won = true;
-//         gameOver = true;
-//     } else if (room.roomPlayers[1].score === 5) {
-//         user2Won = true;
-//         gameOver = true;
-//     }
-// }
+function checkGameStatus(room) {
+    if (room.roomPlayers[0].score === 5) {
+        user1Won = true;
+        gameOver = true;
+    } else if (room.roomPlayers[1].score === 5) {
+        user2Won = true;
+        gameOver = true;
+    }
+}
 
 function collision(ball, player) {
     const playerTop = player.y;
@@ -167,54 +169,41 @@ function collision(ball, player) {
 function startRoomGame(room) {
 	// if (!renderingStopped) {
 	let interval = setInterval(() => {
-		room.roomBall.x += room.roomBall.velocityX;
-		room.roomBall.y += room.roomBall.velocityY;
-
-		if (room.roomBall.y + room.roomBall.r > 644 || room.roomBall.y + room.roomBall.r < 10) {
-			room.roomBall.velocityY *= -1;
-		}
-
-		let player = room.roomBall.x < 1088 / 2 ? room.roomPlayers[0] : room.roomPlayers[1];
-
-		if (collision(room.roomBall, player)) {
-			let collidePoint = room.roomBall.y - (player.y + player.h / 2);
+		if (!isPaused) {
+			room.roomBall.x += room.roomBall.velocityX;
+			room.roomBall.y += room.roomBall.velocityY;
 	
-			collidePoint = collidePoint / (player.h / 2);
-	
-			let angleRad = (Math.PI / 4) * collidePoint;
-			if (player === room.roomPlayers[0]) {
-				angleRad *= 1;
-			} else if (player === room.roomPlayers[1]) {
-				angleRad *= -1;
+			if (room.roomBall.y + room.roomBall.r > 644 || room.roomBall.y + room.roomBall.r < 10) {
+				room.roomBall.velocityY *= -1;
 			}
 	
-			let direction = room.roomBall.x < 1088 / 2 ? 1 : -1;
+			let player = room.roomBall.x < 1088 / 2 ? room.roomPlayers[0] : room.roomPlayers[1];
 	
-			room.roomBall.velocityX = direction * room.roomBall.speed * Math.cos(angleRad);
-			room.roomBall.velocityY = direction * room.roomBall.speed * Math.sin(angleRad);
+			if (collision(room.roomBall, player)) {
+				let collidePoint = room.roomBall.y - (player.y + player.h / 2);
+		
+				collidePoint = collidePoint / (player.h / 2);
+		
+				let angleRad = (Math.PI / 4) * collidePoint;
+				if (player === room.roomPlayers[0]) {
+					angleRad *= 1;
+				} else if (player === room.roomPlayers[1]) {
+					angleRad *= -1;
+				}
+		
+				let direction = room.roomBall.x < 1088 / 2 ? 1 : -1;
+		
+				room.roomBall.velocityX = direction * room.roomBall.speed * Math.cos(angleRad);
+				room.roomBall.velocityY = direction * room.roomBall.speed * Math.sin(angleRad);
+	
+				room.roomBall.speed += 0.2;
+			}
+	
+			updateScore(room);
+			// checkGameStatus(room);
 
-			room.roomBall.speed += 0.2;
+			io.to(room.id).emit("update-game", room);
 		}
-
-		updateScore(room);
-		// checkGameStatus(room);
-
-
-		// if (room.players[0].score === 10) {
-        //     room.winner = 1;
-        //     rooms = rooms.filter(r => r.id !== room.id);
-        //     io.to(room.id).emit('endGame', room);
-        //     clearInterval(interval);
-        // }
-
-        // if (room.players[1].score === 10) {
-        //     room.winner = 2;
-        //     rooms = rooms.filter(r => r.id !== room.id);
-        //     io.to(room.id).emit('endGame', room);
-        //     clearInterval(interval);
-        // }
-
-		io.to(room.id).emit("update-game", room);
 	}, 1000 / framePerSec);
 	// }
 };

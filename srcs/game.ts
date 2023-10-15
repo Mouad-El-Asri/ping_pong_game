@@ -26,7 +26,10 @@ socket.on("connect", () => {
 let user1Won: boolean = false;
 let user2Won: boolean = false;
 let gameOver: boolean = false;
+
 let renderingStopped: boolean = false;
+
+
 let gameStarted: boolean = false;
 let playerNumber: number = 0;
 let roomID: number = 0;
