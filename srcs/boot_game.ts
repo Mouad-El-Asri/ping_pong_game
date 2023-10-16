@@ -168,12 +168,12 @@ class BootPongGame {
                 midLine.color
             );
 
-            if (this.userWon) {
-                drawText("Game Over, You Win!", "#003366");
-            } else if (this.compWon) {
-                drawText("Game Over, You Lose!", "#003366");
-            }
 			this.renderingStopped = true;
+            if (this.userWon) {
+                drawText("Game Over, You Won!", "#003366");
+            } else if (this.compWon) {
+                drawText("Game Over, You Lost!", "#003366");
+            }
         } else {
             drawRect(0, 0, canvasWidth, canvasHeight, "#B2C6E4");
             drawRect(player_1.x, player_1.y, player_1.w, player_1.h, player_1.color);
@@ -218,9 +218,14 @@ class BootPongGame {
 			canvas.addEventListener("mousemove", this.movePaddle);
 			window.addEventListener("keydown", this.movePaddleWithKeys);
 	
-			if (!this.renderingStopped)
-				setInterval(() => this.game(), 1000 / this.framePerSec);
 			this.pauseGame(500);
+			let interval = setInterval(() => {
+				if (this.renderingStopped) {
+					console.log("hello");
+					clearInterval(interval);
+				}
+				this.game();
+			}, 1000 / this.framePerSec);
 		}, 3100);
     }
 }
