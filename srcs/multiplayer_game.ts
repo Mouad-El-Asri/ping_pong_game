@@ -14,7 +14,7 @@ import { Room } from "./interfaces";
 import io from "socket.io-client";
 
 const message: HTMLElement = document.getElementById("message") as HTMLElement;
-const button: HTMLElement = document.getElementById("start-game") as HTMLElement;
+const buttons = document.querySelectorAll<HTMLButtonElement>(".btn");
 
 const socket = io("http://localhost:3000", {
     transports: ["websocket"],
@@ -30,7 +30,9 @@ let roomID: number = 0;
 let countdown: number = 3;
 
 function startGame(): void {
-	button.style.display = "none";
+	for (const button of buttons) {
+		button.style.display = "none";
+	}
     let interval = setInterval(() => {
         if (socket.connected) {
             clearInterval(interval);
@@ -104,12 +106,12 @@ socket.on("start-game", () => {
     console.log("Starting game.");
     gameStarted = true;
     setTimeout(() => {
-        message.innerHTML = "The game will start in 3 seconds...";
+        message.innerHTML = `The game will start in ${countdown} seconds...`;
     }, 500);
 
     const countdownInterval = setInterval(() => {
         countdown--;
-        if (countdown > 0) {
+        if (countdown) {
             message.innerHTML = `The game will start in ${countdown} seconds...`;
         } else {
             clearInterval(countdownInterval);

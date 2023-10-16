@@ -5,7 +5,10 @@ const App: FC = () => {
 		<div>
 			<canvas id="canvas"></canvas>
 			<p id="message"></p>
-			<button id="start-game">Play Online</button>
+			<div>
+				<button className="btn" id="online-game">Play Online</button>
+				<button className="btn" id="bot-game">Play vs Bot</button>
+			</div>
 		</div>
 	);
 };

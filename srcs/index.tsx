@@ -3,8 +3,14 @@ import App from './App';
 
 ReactDOM.render(<App />, document.getElementById('root'));
 
-import startGame from './game';
+import startGame from './multiplayer_game';
+import BootPongGame from "./boot_game";
 
-const button: HTMLElement = document.getElementById("start-game") as HTMLElement;
+const mainButton: HTMLElement = document.getElementById("online-game") as HTMLElement;
+const secondaryButton: HTMLElement = document.getElementById("bot-game") as HTMLElement;
 
-button.addEventListener("click", startGame);
+mainButton.addEventListener("click", startGame);
+secondaryButton.addEventListener("click", () => {
+	const game: BootPongGame = new BootPongGame();
+	game.startGame();
+});

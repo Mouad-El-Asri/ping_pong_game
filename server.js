@@ -54,6 +54,7 @@ io.on("connection", (socket) => {
 
             setTimeout(() => {
                 io.to(room.id).emit("game-started", room);
+				pauseGame(500);
                 startRoomGame(room);
             }, 3100);
         } else {
