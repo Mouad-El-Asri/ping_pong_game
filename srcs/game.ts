@@ -14,6 +14,7 @@ import { Room } from "./interfaces";
 import io from "socket.io-client";
 
 const message: HTMLElement = document.getElementById("message") as HTMLElement;
+const button: HTMLElement = document.getElementById("start-game") as HTMLElement;
 
 const socket = io("http://localhost:3000", {
     transports: ["websocket"],
@@ -151,16 +152,17 @@ socket.on("update-game", (room: Room) => {
 });
 
 socket.on("endGame", (room) => {
-	console.log("Game Over.");
+    console.log("Game Over.");
     gameStarted = false;
     render(room);
     socket.emit("leave", roomID);
 });
 
 function startGame(): void {
+	button.style.display = "none";
     let interval = setInterval(() => {
         if (socket.connected) {
-			clearInterval(interval);
+            clearInterval(interval);
             message.innerHTML = "Waiting for opponent to join...";
             socket.emit("join-room");
         } else {

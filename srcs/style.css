@@ -17,7 +17,7 @@ body {
     right: 0;
     bottom: 0;
     left: 0;
-    border-radius: 25px;
+    border-radius: 15px;
     max-width: 100%;
     max-height: 100%;
     width: auto;
@@ -34,4 +34,17 @@ body {
 	font-size: 25px;
 	font-family: 'Roboto', sans-serif;
 	font-weight: 300;
+}
+
+#start-game {
+	position: relative;
+	color: #3d3c65;
+	background-color: #f08666;
+	font-size: 35px;
+	font-weight: 300;
+	font-family: 'Roboto', sans-serif;
+	margin: auto;
+	border: none;
+	border-radius: 15px;
+	padding: 5px 25px;
 }

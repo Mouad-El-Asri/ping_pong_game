@@ -5,6 +5,7 @@ const App: FC = () => {
 		<div>
 			<canvas id="canvas"></canvas>
 			<p id="message"></p>
+			<button id="start-game">Start Game</button>
 		</div>
 	);
 };

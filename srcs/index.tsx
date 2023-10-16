@@ -5,4 +5,6 @@ ReactDOM.render(<App />, document.getElementById('root'));
 
 import startGame from './game';
 
-startGame();
+const button: HTMLElement = document.getElementById("start-game") as HTMLElement;
+
+button.addEventListener("click", startGame);
