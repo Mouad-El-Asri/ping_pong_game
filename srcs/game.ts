@@ -10,7 +10,7 @@ import {
 } from "./drawFunctions";
 
 import { player_1, player_2, midLine, ball } from "./gameObjects";
-import { Player, Ball, Room } from "./interfaces";
+import { Room } from "./interfaces";
 import io from "socket.io-client";
 
 const message: HTMLElement = document.getElementById("message") as HTMLElement;
@@ -23,20 +23,13 @@ socket.on("connect", () => {
     console.log(`You connected to the server with id : ${socket.id}`);
 });
 
-let user1Won: boolean = false;
-let user2Won: boolean = false;
-let gameOver: boolean = false;
-
-let renderingStopped: boolean = false;
-
-
 let gameStarted: boolean = false;
 let playerNumber: number = 0;
 let roomID: number = 0;
 let countdown: number = 3;
 
-function render(): void {
-    if (gameOver) {
+function render(room: Room): void {
+    if (room.winner) {
         drawRect(0, 0, canvasWidth, canvasHeight, "#B2C6E4");
         drawLine(
             canvasWidth / 2,
@@ -53,12 +46,11 @@ function render(): void {
             midLine.color
         );
 
-        if (user1Won) {
-            drawText("Game Over, You Win!", "#003366");
-        } else if (user2Won) {
-            drawText("Game Over, You Lose!", "#003366");
+        if (room.winner === playerNumber) {
+            drawText("Game Over, You Won!", "#003366");
+        } else {
+            drawText("Game Over, You Lost!", "#003366");
         }
-        renderingStopped = true;
     } else {
         drawRect(0, 0, canvasWidth, canvasHeight, "#B2C6E4");
         drawRect(
@@ -96,78 +88,86 @@ socket.on("player-number", (num: number) => {
 socket.on("start-game", () => {
     console.log("Starting game.");
     gameStarted = true;
-	setTimeout(() => {
-		message.innerHTML = "The game will start in 3 seconds...";
-	}, 500);
+    setTimeout(() => {
+        message.innerHTML = "The game will start in 3 seconds...";
+    }, 500);
 
-	const countdownInterval = setInterval(() => {
-		countdown--;
-		if (countdown > 0) {
-			message.innerHTML = `The game will start in ${countdown} seconds...`;
-		} else {
-			clearInterval(countdownInterval);
-			message.innerHTML = "";
-		}
-	}, 1000);
+    const countdownInterval = setInterval(() => {
+        countdown--;
+        if (countdown > 0) {
+            message.innerHTML = `The game will start in ${countdown} seconds...`;
+        } else {
+            clearInterval(countdownInterval);
+            message.innerHTML = "";
+        }
+    }, 1000);
 });
 
 socket.on("game-started", (room: Room) => {
-	console.log(`Game started with room id : ${room.id}`);
-	roomID = room.id;
+    console.log(`Game started with room id : ${room.id}`);
+    roomID = room.id;
 
-	player_1.x = room.roomPlayers[0].x;
-	player_1.y = room.roomPlayers[0].y;
-	player_1.score = room.roomPlayers[0].score;
+    player_1.x = room.roomPlayers[0].x;
+    player_1.y = room.roomPlayers[0].y;
+    player_1.score = room.roomPlayers[0].score;
 
-	player_2.x = room.roomPlayers[1].x;
-	player_2.y = room.roomPlayers[1].y;
-	player_2.score = room.roomPlayers[1].score;
+    player_2.x = room.roomPlayers[1].x;
+    player_2.y = room.roomPlayers[1].y;
+    player_2.score = room.roomPlayers[1].score;
 
-	ball.x = room.roomBall.x;
-	ball.y = room.roomBall.y;
+    ball.x = room.roomBall.x;
+    ball.y = room.roomBall.y;
 
-	let pos: DOMRect = canvas.getBoundingClientRect();
-	canvas.addEventListener("mousemove", (event: MouseEvent) => {
-		if (gameStarted && !gameOver) {
-			socket.emit("update-player", {
-				playerNumber: playerNumber,
-				roomID: roomID,
-				event: event.clientY,
-				position: pos,
-			});
-		}
-	});
+    let pos: DOMRect = canvas.getBoundingClientRect();
+    canvas.addEventListener("mousemove", (event: MouseEvent) => {
+        if (gameStarted) {
+            socket.emit("update-player", {
+                playerNumber: playerNumber,
+                roomID: roomID,
+                event: event.clientY,
+                position: pos,
+            });
+        }
+    });
 
-	render();
+    render(room);
 });
 
 socket.on("update-game", (room: Room) => {
-	ball.x = room.roomBall.x;
-	ball.y = room.roomBall.y;
-	ball.r = room.roomBall.r;
-	ball.velocityX = room.roomBall.velocityX;
-	ball.velocityY = room.roomBall.velocityY;
-	ball.speed = room.roomBall.speed;
+    ball.x = room.roomBall.x;
+    ball.y = room.roomBall.y;
+    ball.r = room.roomBall.r;
+    ball.velocityX = room.roomBall.velocityX;
+    ball.velocityY = room.roomBall.velocityY;
+    ball.speed = room.roomBall.speed;
 
-	player_1.y = room.roomPlayers[0].y;
-	player_2.y = room.roomPlayers[1].y;
+    player_1.y = room.roomPlayers[0].y;
+    player_2.y = room.roomPlayers[1].y;
 
-	player_1.score = room.roomPlayers[0].score;
-	player_2.score = room.roomPlayers[1].score;
+    player_1.score = room.roomPlayers[0].score;
+    player_2.score = room.roomPlayers[1].score;
 
-	render();
+    render(room);
+});
+
+socket.on("endGame", (room) => {
+	console.log("Game Over.");
+    gameStarted = false;
+    render(room);
+    socket.emit("leave", roomID);
 });
 
 function startGame(): void {
-    setTimeout(() => {
+    let interval = setInterval(() => {
         if (socket.connected) {
+			clearInterval(interval);
             message.innerHTML = "Waiting for opponent to join...";
             socket.emit("join-room");
         } else {
             message.innerHTML =
-                "Failed to connect to server, please try again later.";
+                "Failed to connect to server, please try again later";
         }
-    }, 150);
+    }, 100);
 }
 
 export default startGame;

@@ -43,6 +43,7 @@ interface RoomBall {
 }
 
 interface Room {
+	winner: number;
     id: number;
     roomPlayers: RoomPlayer[];
     roomBall: RoomBall;
