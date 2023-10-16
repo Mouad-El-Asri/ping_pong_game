@@ -1,4 +1,3 @@
-import e from "cors";
 import {
     canvas,
     canvasWidth,
@@ -29,6 +28,20 @@ let gameStarted: boolean = false;
 let playerNumber: number = 0;
 let roomID: number = 0;
 let countdown: number = 3;
+
+function startGame(): void {
+	button.style.display = "none";
+    let interval = setInterval(() => {
+        if (socket.connected) {
+            clearInterval(interval);
+            message.innerHTML = "Waiting for opponent to join...";
+            socket.emit("join-room");
+        } else {
+            message.innerHTML =
+                "Failed to connect to server, please try again later";
+        }
+    }, 50);
+}
 
 function render(room: Room): void {
     if (room.winner) {
@@ -171,25 +184,11 @@ socket.on("update-game", (room: Room) => {
     render(room);
 });
 
-socket.on("endGame", (room) => {
+socket.on("endGame", (room: Room) => {
     console.log("Game Over.");
     gameStarted = false;
     render(room);
     socket.emit("leave", roomID);
 });
-
-function startGame(): void {
-	button.style.display = "none";
-    let interval = setInterval(() => {
-        if (socket.connected) {
-            clearInterval(interval);
-            message.innerHTML = "Waiting for opponent to join...";
-            socket.emit("join-room");
-        } else {
-            message.innerHTML =
-                "Failed to connect to server, please try again later";
-        }
-    }, 50);
-}
 
 export default startGame;
