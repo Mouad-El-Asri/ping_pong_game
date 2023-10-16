@@ -1,3 +1,4 @@
+import e from "cors";
 import {
     canvas,
     canvasWidth,
@@ -125,11 +126,30 @@ socket.on("game-started", (room: Room) => {
             socket.emit("update-player", {
                 playerNumber: playerNumber,
                 roomID: roomID,
+				direction: "mouse",
                 event: event.clientY,
                 position: pos,
             });
         }
     });
+
+	window.addEventListener("keydown", (event: KeyboardEvent) => {
+		if (event.key === "ArrowUp") {
+			socket.emit("update-player", {
+				playerNumber: playerNumber,
+				roomID: roomID,
+				direction: "up",
+				position: pos,
+			});
+		} else if (event.key === "ArrowDown") {
+			socket.emit("update-player", {
+				playerNumber: playerNumber,
+				roomID: roomID,
+				direction: "down",
+				position: pos,
+			});
+		}
+	});
 
     render(room);
 });
@@ -169,7 +189,7 @@ function startGame(): void {
             message.innerHTML =
                 "Failed to connect to server, please try again later";
         }
-    }, 100);
+    }, 50);
 }
 
 export default startGame;

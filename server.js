@@ -91,19 +91,32 @@ io.on("connection", (socket) => {
         const room = rooms.find((room) => room.id === data.roomID);
 
         if (room) {
-            room.roomPlayers[data.playerNumber - 1].y =
-                data.event - data.position.top - 100 / 2;
+			if (data.direction === "mouse") {
+				room.roomPlayers[data.playerNumber - 1].y = data.event - data.position.top - 100 / 2;
+			} else if (data.direction === "up") {
+				room.roomPlayers[data.playerNumber - 1].y -= 30;
+				if (room.roomPlayers[data.playerNumber - 1].y <= -50) {
+					room.roomPlayers[data.playerNumber - 1].y = -50;
+				}
+			} else if (data.direction === "down") {
+				room.roomPlayers[data.playerNumber - 1].y += 30;
+				if (room.roomPlayers[data.playerNumber - 1].y + 100 >= 644) {
+					room.roomPlayers[data.playerNumber - 1].y = 644 - 100 / 2;
+				}
+			}
         }
 
         rooms = rooms.map((oldRoom) => {
-            if (oldRoom.id === room.id) {
+            if (room && oldRoom.id === room.id) {
                 return room;
             } else {
                 return oldRoom;
             }
         });
 
-        io.to(room.id).emit("update-game", room);
+		if (room) {
+			io.to(room.id).emit("update-game", room);
+		}
     });
 
     socket.on("leave", (roomID) => {
