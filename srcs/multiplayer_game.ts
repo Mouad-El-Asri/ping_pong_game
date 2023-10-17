@@ -6,7 +6,6 @@ import {
     drawBall,
     drawLine,
     drawScore,
-    drawText,
 } from "./drawFunctions";
 
 import { player_1, player_2, midLine, ball } from "./gameObjects";
@@ -64,9 +63,9 @@ function render(room: Room): void {
         );
 
         if (room.winner === playerNumber) {
-            drawText("Game Over, You Won!", "#003366");
+            message.innerHTML = "Game Over, You Won!";
         } else {
-            drawText("Game Over, You Lost!", "#003366");
+            message.innerHTML = "Game Over, You Lost!";
         }
     } else {
         drawRect(0, 0, canvasWidth, canvasHeight, "#B2C6E4");

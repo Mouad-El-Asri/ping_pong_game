@@ -52,17 +52,6 @@ function drawScore(text: string, x: number, y: number, color: string): void {
     ctx.fillText(text, textX, y);
 }
 
-function drawText(text: string, color: string): void {
-    ctx.fillStyle = color;
-    ctx.font = "500 50px Arial";
-
-    const textWidth: number = ctx.measureText(text).width;
-
-    const textX: number = canvasWidth / 2 - textWidth / 2;
-
-    ctx.fillText(text, textX, canvasHeight / 2);
-}
-
 export {
     canvas,
     canvasWidth,
@@ -71,5 +60,4 @@ export {
     drawBall,
     drawLine,
     drawScore,
-    drawText,
 };

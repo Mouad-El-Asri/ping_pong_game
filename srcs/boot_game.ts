@@ -6,7 +6,6 @@ import {
     drawBall,
     drawLine,
     drawScore,
-    drawText,
 } from "./drawFunctions";
 
 import { player_1, player_2, midLine, ball } from "./gameObjects";
@@ -170,9 +169,9 @@ class BootPongGame {
 
 			this.renderingStopped = true;
             if (this.userWon) {
-                drawText("Game Over, You Won!", "#003366");
+				message.innerHTML = "Game Over, You Won!";
             } else if (this.compWon) {
-                drawText("Game Over, You Lost!", "#003366");
+                message.innerHTML = "Game Over, You Lost!";
             }
         } else {
             drawRect(0, 0, canvasWidth, canvasHeight, "#B2C6E4");
