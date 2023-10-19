@@ -538,12 +538,34 @@ video {
   position: absolute;
 }
 
+.relative {
+  position: relative;
+}
+
 .inset-0 {
   inset: 0px;
 }
 
 .m-auto {
   margin: auto;
+}
+
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.my-2 {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.block {
+  display: block;
+}
+
+.h-auto {
+  height: auto;
 }
 
 .max-h-full {
@@ -558,13 +580,84 @@ video {
   max-width: 100%;
 }
 
-.rounded-canvas {
+.rounded-main {
   border-radius: 40px;
+}
+
+.border-none {
+  border-style: none;
+}
+
+.bg-bluish-purple {
+  --tw-bg-opacity: 1;
+  background-color: rgb(61 60 101 / var(--tw-bg-opacity));
 }
 
 .bg-pale-blue {
   --tw-bg-opacity: 1;
   background-color: rgb(178 198 228 / var(--tw-bg-opacity));
+}
+
+.bg-reddish-orange {
+  --tw-bg-opacity: 1;
+  background-color: rgb(240 134 102 / var(--tw-bg-opacity));
+}
+
+.px-8 {
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+.pb-2 {
+  padding-bottom: 0.5rem;
+}
+
+.pt-1 {
+  padding-top: 0.25rem;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.font-roboto {
+  font-family: Roboto, sans-serif;
+}
+
+.font-zenkaku {
+  font-family: Zen Kaku Gothic Antique, sans-serif;
+}
+
+.text-2xl {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+.text-4xl {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+}
+
+.font-light {
+  font-weight: 300;
+}
+
+.font-medium {
+  font-weight: 500;
+}
+
+.tracking-normal {
+  letter-spacing: 0em;
+}
+
+.text-bluish-purple {
+  --tw-text-opacity: 1;
+  color: rgb(61 60 101 / var(--tw-text-opacity));
+}
+
+.text-pale-blue {
+  --tw-text-opacity: 1;
+  color: rgb(178 198 228 / var(--tw-text-opacity));
 }
 
 body {
@@ -576,57 +669,6 @@ body {
   height: 100vh;
   width: 100vw;
   overflow: hidden;
-}
-
-/* #canvas {
-    background: #b2c6e4;
-    position: absolute;
-    margin: auto;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    border-radius: 40px;
-    max-width: 100%;
-    max-height: 100%;
-    width: auto;
-    height: auto;
-} */
-
-#message {
-  position: relative;
-  color: #3d3c65;
-  top: 50;
-  left: 50;
-  bottom: 50;
-  right: 50;
-  font-size: 25px;
-  font-family: 'Roboto', sans-serif;
-  font-weight: 300;
-}
-
-.btn {
-  display: block;
-  position: relative;
-  font-family: 'Zen Kaku Gothic Antique', sans-serif;
-  font-size: 40px;
-  font-weight: 500;
-  text-align: center;
-  margin: 8px auto;
-  border: none;
-  border-radius: 50px;
-  padding: 2px 30px 4px;
-  letter-spacing: 0px;
-}
-
-#online-game {
-  color: #3d3c65;
-  background-color: #f08666;
-}
-
-#bot-game {
-  color: #b2c6e4;
-  background-color: #3d3c65;
 }
 
 /* .last-message {

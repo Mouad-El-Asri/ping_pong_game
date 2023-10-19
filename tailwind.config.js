@@ -3,12 +3,18 @@ module.exports = {
     content: ["./srcs/*.{ts,tsx}"],
     theme: {
         extend: {
-            backgroundColor: {
+            colors: {
                 "pale-blue": "#b2c6e4",
+				"bluish-purple": "#3d3c65",
+				"reddish-orange": "#f08666",
             },
             borderRadius: {
-                canvas: "40px",
+                main: "40px",
             },
+			fontFamily: {
+				roboto: ["Roboto", "sans-serif"],
+				zenkaku: ["Zen Kaku Gothic Antique", "sans-serif"],
+			},
         },
     },
 };
