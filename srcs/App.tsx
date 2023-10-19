@@ -1,3 +1,4 @@
+import React from "react";
 import { FC } from "react";
 
 const App: FC = () => {
@@ -13,13 +14,13 @@ const App: FC = () => {
             ></p>
             <div>
                 <button
-                    className="text-bluish-purple bg-reddish-orange block relative text-4xl border-none rounded-main font-zenkaku text-center font-medium tracking-normal my-2 mx-auto pt-1 px-8 pb-2"
+                    className="btn text-bluish-purple bg-reddish-orange block relative text-4xl border-none rounded-main font-zenkaku text-center font-medium tracking-normal my-2 mx-auto pt-1 px-7 pb-2"
                     id="online-game"
                 >
                     Play Online
                 </button>
                 <button
-                    className="text-pale-blue bg-bluish-purple block relative text-4xl border-none rounded-main font-zenkaku text-center font-medium tracking-normal my-2 mx-auto pt-1 px-8 pb-2"
+                    className="btn text-pale-blue bg-bluish-purple block relative text-4xl border-none rounded-main font-zenkaku text-center font-medium tracking-normal my-2 mx-auto pt-1 px-7 pb-2"
                     id="bot-game"
                 >
                     Play vs Bot
