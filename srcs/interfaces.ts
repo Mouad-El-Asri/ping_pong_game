@@ -26,10 +26,12 @@ interface Ball {
 }
 
 interface RoomPlayer {
-    socketId: number;
+    socketId: string;
     playerNumber: number;
     x: number;
     y: number;
+	h: number;
+	w: number;
     score: number;
 }
 
@@ -43,10 +45,19 @@ interface RoomBall {
 }
 
 interface Room {
+	stopRendering: boolean;
 	winner: number;
-    id: number;
+    id: string;
     roomPlayers: RoomPlayer[];
     roomBall: RoomBall;
 }
 
-export { Player, Line, Ball, Room };
+interface Data {
+	playerNumber: number;
+	roomID: string;
+	direction: string;
+	event: number;
+	position: DOMRect;
+}
+
+export { Player, Line, Ball, Room, RoomPlayer, RoomBall, Data };

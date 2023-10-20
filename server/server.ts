@@ -4,11 +4,14 @@ const http = require("http");
 const server = http.createServer(app);
 const io = require("socket.io")(server);
 const cors = require("cors");
-const { render } = require("react-dom");
 
-let rooms = [];
-let framePerSec = 50;
-let isPaused = false;
+import { Request, Response } from "express";
+import { Socket } from 'socket.io';
+import { Room, RoomPlayer, RoomBall, Data } from "../srcs/interfaces";
+
+let rooms: Room[] = [];
+let framePerSec: number = 50;
+let isPaused: boolean = false;
 
 app.use(
     cors({
@@ -16,7 +19,7 @@ app.use(
     })
 );
 
-app.get("/", (req, res) => {
+app.get("/", (req: Request, res: Response) => {
     res.send("<h1>Hello World!</h1>");
 });
 
@@ -24,7 +27,7 @@ server.listen(3000, () => {
     console.log("Server is running on http://localhost:3000");
 });
 
-io.on("connection", (socket) => {
+io.on("connection", (socket: Socket) => {
     console.log(`New user connected : ${socket.id}`);
 
     socket.on("join-room", () => {
@@ -61,7 +64,7 @@ io.on("connection", (socket) => {
             room = {
 				stopRendering: false,
                 winner: 0,
-                id: rooms.length + 1,
+                id: (rooms.length + 1).toString(),
                 roomPlayers: [
                     {
                         socketId: socket.id,
@@ -88,7 +91,7 @@ io.on("connection", (socket) => {
         }
     });
 
-    socket.on("update-player", (data) => {
+    socket.on("update-player", (data: Data) => {
         const room = rooms.find((room) => room.id === data.roomID);
 
         if (room) {
@@ -120,7 +123,7 @@ io.on("connection", (socket) => {
 		}
     });
 
-    socket.on("leave", (roomID) => {
+    socket.on("leave", (roomID: string) => {
 		socket.leave(roomID);
     });
 
@@ -139,7 +142,7 @@ io.on("connection", (socket) => {
     });
 });
 
-function findRoomBySocketId(socketId) {
+function findRoomBySocketId(socketId: string) {
 	for (const room of rooms) {
         const playerInRoom = room.roomPlayers.find(player => player.socketId === socketId);
         if (playerInRoom) {
@@ -149,20 +152,20 @@ function findRoomBySocketId(socketId) {
     return null;
 }
 
-function resetBall(room) {
+function resetBall(room: Room) {
     room.roomBall.x = 1088 / 2;
     room.roomBall.y = 644 / 2;
     room.roomBall.velocityX *= -1;
 }
 
-function pauseGame(duration) {
+function pauseGame(duration: number) {
     isPaused = true;
     setTimeout(() => {
         isPaused = false;
     }, duration);
 }
 
-function updateScore(room) {
+function updateScore(room: Room) {
     if (room.roomBall.x - room.roomBall.r < 0) {
         console.log(`player 2 scored in room : ${room.id}`);
         room.roomPlayers[1].score++;
@@ -176,7 +179,7 @@ function updateScore(room) {
     }
 }
 
-function collision(ball, player) {
+function collision(ball: RoomBall, player: RoomPlayer) {
     const playerTop = player.y;
     const playerBottom = player.y + player.h;
     const playerLeft = player.x;
@@ -195,7 +198,7 @@ function collision(ball, player) {
     );
 }
 
-function startRoomGame(room) {
+function startRoomGame(room: Room) {
     let interval = setInterval(() => {
         if (!isPaused) {
             room.roomBall.x += room.roomBall.velocityX;

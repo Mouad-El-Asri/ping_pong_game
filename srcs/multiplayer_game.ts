@@ -25,7 +25,7 @@ socket.on("connect", () => {
 
 let gameStarted: boolean = false;
 let playerNumber: number = 0;
-let roomID: number = 0;
+let roomID: string = "";
 let countdown: number = 3;
 
 function startGame(): void {
