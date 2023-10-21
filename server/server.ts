@@ -62,6 +62,7 @@ io.on("connection", (socket: Socket) => {
             }, 3100);
         } else {
             room = {
+				gameAbondoned: false,
 				stopRendering: false,
                 winner: 0,
                 id: (rooms.length + 1).toString(),
@@ -125,12 +126,13 @@ io.on("connection", (socket: Socket) => {
 
     socket.on("leave", (roomID: string) => {
 		socket.leave(roomID);
-    });
+	});
 
     socket.on("disconnect", () => {
-        console.log(`User disconnected : ${socket.id}`);
-		let room = findRoomBySocketId(socket.id);
+		const room: Room | null = findRoomBySocketId(socket.id);
 		if (room) {
+			room.gameAbondoned = true;
+			console.log(`User disconnected : ${socket.id}`);
 			room.stopRendering = true;
 			if (room.roomPlayers[0].socketId == socket.id) {
 				room.winner = 2;
@@ -138,18 +140,21 @@ io.on("connection", (socket: Socket) => {
 				room.winner = 1;
 			}
 			io.to(room.id).emit("endGame", room);
+			rooms = rooms.filter((r) => r.id !== room.id);
+		} else {
+			console.log(`User disconnected but was not in a room: ${socket.id}`);
 		}
     });
 });
 
 function findRoomBySocketId(socketId: string) {
 	for (const room of rooms) {
-        const playerInRoom = room.roomPlayers.find(player => player.socketId === socketId);
-        if (playerInRoom) {
-            return room;
-        }
+		const playerInRoom = room.roomPlayers.find(player => player.socketId === socketId);
+		if (playerInRoom) {
+			return room;
+		}
     }
-    return null;
+	return null;
 }
 
 function resetBall(room: Room) {

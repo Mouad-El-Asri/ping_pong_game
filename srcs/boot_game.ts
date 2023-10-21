@@ -13,6 +13,7 @@ import { Player, Ball } from "./interfaces";
 
 const message: HTMLElement = document.getElementById("message") as HTMLElement;
 const buttons = document.querySelectorAll<HTMLButtonElement>(".btn");
+const exitButton: HTMLButtonElement = document.getElementById("exit-btn") as HTMLButtonElement;
 
 let comp: Player = player_2;
 
@@ -156,12 +157,12 @@ class BootPongGame {
                 canvasWidth / 2,
                 0,
                 canvasWidth / 2,
-                canvasHeight / 2 - 40,
+                canvasHeight / 2 - 70,
                 midLine.color
             );
             drawLine(
                 canvasWidth / 2,
-                canvasHeight / 2 + 40,
+                canvasHeight / 2 + 70,
                 canvasWidth / 2,
                 canvasHeight,
                 midLine.color
@@ -173,6 +174,7 @@ class BootPongGame {
             } else if (this.compWon) {
                 message.innerHTML = "Game Over, You Lost!";
             }
+			exitButton.style.display = "block";
         } else {
             drawRect(0, 0, canvasWidth, canvasHeight, "#B2C6E4");
             drawRect(player_1.x, player_1.y, player_1.w, player_1.h, player_1.color);

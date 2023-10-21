@@ -45,6 +45,7 @@ interface RoomBall {
 }
 
 interface Room {
+	gameAbondoned: boolean;
 	stopRendering: boolean;
 	winner: number;
     id: string;

@@ -14,6 +14,7 @@ import io from "socket.io-client";
 
 const message: HTMLElement = document.getElementById("message") as HTMLElement;
 const buttons = document.querySelectorAll<HTMLButtonElement>(".btn");
+const exitButton: HTMLButtonElement = document.getElementById("exit-btn") as HTMLButtonElement;
 
 const socket = io("http://localhost:3000", {
     transports: ["websocket"],
@@ -51,22 +52,27 @@ function render(room: Room): void {
             canvasWidth / 2,
             0,
             canvasWidth / 2,
-            canvasHeight / 2 - 40,
+            canvasHeight / 2 - 70,
             midLine.color
         );
         drawLine(
             canvasWidth / 2,
-            canvasHeight / 2 + 40,
+            canvasHeight / 2 + 70,
             canvasWidth / 2,
             canvasHeight,
             midLine.color
         );
 
         if (room.winner === playerNumber) {
-            message.innerHTML = "Game Over, You Won!";
+			if (room.gameAbondoned) {
+				message.innerHTML = "Game abondoned, You Won!";
+			} else { 
+				message.innerHTML = "Game Over, You Won!";
+			}
         } else {
-            message.innerHTML = "Game Over, You Lost!";
+			message.innerHTML = "Game Over, You Lost!";
         }
+		exitButton.style.display = "block";
     } else {
         drawRect(0, 0, canvasWidth, canvasHeight, "#B2C6E4");
         drawRect(

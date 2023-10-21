@@ -7,6 +7,7 @@ module.exports = {
                 "pale-blue": "#b2c6e4",
 				"bluish-purple": "#3d3c65",
 				"reddish-orange": "#f08666",
+				"exit-red": "#ef233c",
             },
             borderRadius: {
                 main: "40px",
