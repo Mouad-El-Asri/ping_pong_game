@@ -7,6 +7,9 @@ game/
 # webpack build files
 dist/
 
+# nestJS dist
+nestDist/
+
 # Environment-specific .env files
 .env
 
