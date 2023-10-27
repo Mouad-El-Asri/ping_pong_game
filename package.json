@@ -5,6 +5,7 @@
     "main": "main.js",
     "scripts": {
         "start": "nodemon",
+		"run-server": "nest start",
         "compile": "tsc -p ./config/tsconfig.json",
         "build": "webpack --config ./config/webpack.config.js",
         "build-css": "tailwindcss build -i srcs/style.css -o public/style.css --config ./config/tailwind.config.js"
